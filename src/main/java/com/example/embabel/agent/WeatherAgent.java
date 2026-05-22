@@ -37,19 +37,18 @@ public class WeatherAgent {
     }
 
     record WeatherData(
-            String cityName,
-            String country,
-            double temperature,
-            double feelsLike,
-            String description,
-            String icon,
-            int humidity,
-            double windSpeed,
-            String sunrise,
-            String sunset
+        String cityName,
+        String country,
+        double temperature,
+        double feelsLike,
+        String description,
+        String icon,
+        int humidity,
+        double windSpeed,
+        String sunrise,
+        String sunset
     ) {
     }
-
 
 
     @Value("${openweather.api.key}")
@@ -62,19 +61,21 @@ public class WeatherAgent {
     }
 
     @Action
-    public City extractCity(UserInput userInput, OperationContext operationContext) {
-        return operationContext.ai().withLlm(LlmOptions.fromCriteria(ModelSelectionCriteria.getAuto())).createObjectIfPossible(
-                """
-                        Extract the city name from this user input.
-                        - city name: the name of the city
+    City extractCity(UserInput userInput, OperationContext operationContext) {
+        return operationContext.ai()
+            .withLlm(LlmOptions.fromCriteria(ModelSelectionCriteria.getAuto()))
+            .createObjectIfPossible(
+            """
+                Extract the city name from this user input.
+                - city name: the name of the city
 
-                        User input: %s""".formatted(userInput.getContent()),
-                City.class
+                User input: %s""".formatted(userInput.getContent()),
+            City.class
         );
     }
 
     @Action
-    public WeatherData retrieveWeather(City city) {
+    WeatherData retrieveWeather(City city) {
         if (city == null || city.name() == null || city.name().isEmpty()) {
             System.err.println("WeatherAgent: City is null or empty");
             return null;
@@ -87,8 +88,8 @@ public class WeatherAgent {
 
         String geoQuery = city.name();
         String geoApiUrl = String.format("https://api.openweathermap.org/geo/1.0/direct?q=%s&limit=1&appid=%s",
-                geoQuery,
-                openWeatherApiKey);
+            geoQuery,
+            openWeatherApiKey);
 
         System.out.println("WeatherAgent: Calling geo API: " + geoApiUrl);
 
@@ -105,9 +106,9 @@ public class WeatherAgent {
         }
 
         String weatherApiUrl = String.format("https://api.openweathermap.org/data/2.5/weather?lat=%s&lon=%s&appid=%s&units=metric",
-                geoResponse.lat,
-                geoResponse.lon,
-                openWeatherApiKey);
+            geoResponse.lat,
+            geoResponse.lon,
+            openWeatherApiKey);
 
         OpenWeatherResponse response = restTemplate.getForObject(weatherApiUrl, OpenWeatherResponse.class);
 
@@ -118,16 +119,16 @@ public class WeatherAgent {
             response.weather.length > 0 &&
             response.wind != null) {
             return new WeatherData(
-                    response.name,
-                    response.sys.country,
-                    response.main.temp,
-                    response.main.feels_like,
-                    response.weather[0].description,
-                    response.weather[0].icon,
-                    response.main.humidity,
-                    response.wind.speed,
-                    formatTimestamp(response.sys.sunrise),
-                    formatTimestamp(response.sys.sunset)
+                response.name,
+                response.sys.country,
+                response.main.temp,
+                response.main.feels_like,
+                response.weather[0].description,
+                response.weather[0].icon,
+                response.main.humidity,
+                response.wind.speed,
+                formatTimestamp(response.sys.sunrise),
+                formatTimestamp(response.sys.sunset)
             );
         }
 
@@ -136,45 +137,43 @@ public class WeatherAgent {
 
     private String formatTimestamp(long timestamp) {
         return DateTimeFormatter.ofPattern("HH:mm")
-                .withZone(ZoneId.systemDefault())
-                .format(Instant.ofEpochSecond(timestamp));
+            .withZone(ZoneId.systemDefault())
+            .format(Instant.ofEpochSecond(timestamp));
     }
 
     @AchievesGoal(description = "generate weather related response to user, based on user's input and weather data")
     @Action
-    public String reply(UserInput userInput, WeatherData weatherData, Ai ai) {
-        var reply = ai
-                .withAutoLlm()
-                .generateText(String.format("""
-                                Generate a friendly weather response for the user based on the following data:
+    String reply(UserInput userInput, WeatherData weatherData, Ai ai) {
+        return ai
+            .withAutoLlm()
+            .generateText(String.format("""
+                    Generate a friendly weather response for the user based on the following data:
 
-                                # Weather Data
-                                City: %s
-                                Country: %s
-                                Temperature: %.1f°C
-                                Feels like: %.1f°C
-                                Condition: %s
-                                Humidity: %d%%
-                                Wind Speed: %.1f m/s
-                                Sunrise: %s
-                                Sunset: %s
+                    # Weather Data
+                    City: %s
+                    Country: %s
+                    Temperature: %.1f°C
+                    Feels like: %.1f°C
+                    Condition: %s
+                    Humidity: %d%%
+                    Wind Speed: %.1f m/s
+                    Sunrise: %s
+                    Sunset: %s
 
-                                # User input
-                                %s
-                                """,
-                        weatherData.cityName(),
-                        weatherData.country(),
-                        weatherData.temperature(),
-                        weatherData.feelsLike(),
-                        weatherData.description(),
-                        weatherData.humidity(),
-                        weatherData.windSpeed(),
-                        weatherData.sunrise(),
-                        weatherData.sunset(),
-                        userInput.getContent()
-                ).trim());
-
-        return reply;
+                    # User input
+                    %s
+                    """,
+                weatherData.cityName(),
+                weatherData.country(),
+                weatherData.temperature(),
+                weatherData.feelsLike(),
+                weatherData.description(),
+                weatherData.humidity(),
+                weatherData.windSpeed(),
+                weatherData.sunrise(),
+                weatherData.sunset(),
+                userInput.getContent()
+            ).trim());
     }
 
     public static class GeoResponse {
@@ -184,7 +183,8 @@ public class WeatherAgent {
         public String country;
         public String zip;
 
-        public GeoResponse() {}
+        public GeoResponse() {
+        }
 
         public GeoResponse(String name, Double lat, Double lon, String country) {
             this.name = name;
