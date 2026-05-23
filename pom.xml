@@ -38,6 +38,20 @@
 
         <dependency>
             <groupId>com.embabel.agent</groupId>
+            <artifactId>embabel-agent-rag-lucene</artifactId>
+            <version>${embabel-agent.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.embabel.agent</groupId>
+            <artifactId>embabel-agent-rag-core</artifactId>
+            <version>${embabel-agent.version}</version>
+        </dependency>
+
+        
+
+        <dependency>
+            <groupId>com.embabel.agent</groupId>
             <artifactId>embabel-agent-netty-client-autoconfigure</artifactId>
         </dependency>
 
