@@ -18,7 +18,7 @@ embabel:
             completions-path: /v3/chat/completions
             api-key: unused
             models: qwen3:4b
-
+# https://docs.embabel.com/embabel-agent/guide/0.3.5/#spring-and-jvm-integration
 
 openweather:
   api:
