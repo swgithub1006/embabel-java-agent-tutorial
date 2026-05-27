@@ -8,8 +8,10 @@ embabel:
   agent:
     platform:
       models:
-        deepseek:
-          api-key: ${DEEPSEEK_API_KEY}
+        deepseek-chat:
+          model-name: deepseek-r1-qwen-7b
+          base-url: http://192.168.3.66:8000/v3
+          api-key: unused
 
 openweather:
   api:
