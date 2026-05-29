@@ -5,6 +5,7 @@ spring:
     ollama:
       # Not needed when using the default port
       base-url: http://192.168.3.66:11434
+      model: gemma3:4b
 
 embabel:
   models:
