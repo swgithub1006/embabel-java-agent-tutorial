@@ -19,9 +19,9 @@ import java.util.List;
 
 /**
  * AI 相关配置类
- * 
+ *
  * <p>配置 Spring AI 的核心组件，包括嵌入模型、向量存储和文本分割器。</p>
- * 
+ *
  * <p>核心 Bean 定义：
  * <ul>
  *   <li>embeddingModel - 嵌入模型，用于将文本转换为向量</li>
@@ -37,10 +37,10 @@ public class AIConfig {
 
     /**
      * 配置嵌入模型
-     * 
+     *
      * <p>使用简单的随机嵌入实现，适用于开发和测试环境。
      * 在生产环境中，建议使用真实的嵌入服务（如 OpenAI、DeepSeek 等）。</p>
-     * 
+     *
      * @return EmbeddingModel 实例
      */
     @Bean
@@ -50,10 +50,10 @@ public class AIConfig {
 
     /**
      * 配置向量存储
-     * 
+     *
      * <p>使用 Spring AI 的 SimpleVectorStore，这是一个内存中的向量存储实现。
      * 它依赖于嵌入模型来生成文档向量。</p>
-     * 
+     *
      * @param embeddingModel 嵌入模型
      * @return VectorStore 实例
      */
@@ -64,10 +64,10 @@ public class AIConfig {
 
     /**
      * 配置文本分割器
-     * 
+     *
      * <p>使用 TokenTextSplitter，基于 token 数量分割文档，
      * 确保每个文档片段适合嵌入模型的输入限制。</p>
-     * 
+     *
      * @return TextSplitter 实例
      */
     @Bean
@@ -77,15 +77,17 @@ public class AIConfig {
 
     /**
      * 简单的嵌入模型实现
-     * 
+     *
      * <p>生成随机的 384 维向量，用于开发和测试。
      * 注意：在生产环境中应替换为真实的嵌入服务。</p>
      */
     private static class SimpleEmbeddingModel implements EmbeddingModel {
 
+        private final int dimensions = 1024;
+
         /**
          * 为多个文本生成嵌入向量
-         * 
+         *
          * @param texts 文本列表
          * @return 嵌入向量列表
          */
@@ -100,13 +102,13 @@ public class AIConfig {
 
         /**
          * 为单个文本生成嵌入向量
-         * 
+         *
          * @param text 文本内容
          * @return 384 维嵌入向量
          */
         @Override
         public float[] embed(String text) {
-            float[] embedding = new float[384];
+            float[] embedding = new float[dimensions];
             for (int i = 0; i < embedding.length; i++) {
                 embedding[i] = (float) Math.random() * 2 - 1;
             }
@@ -115,7 +117,7 @@ public class AIConfig {
 
         /**
          * 为 Document 对象生成嵌入向量
-         * 
+         *
          * @param document 文档对象
          * @return 嵌入向量
          */
@@ -126,17 +128,17 @@ public class AIConfig {
 
         /**
          * 获取嵌入向量的维度
-         * 
+         *
          * @return 向量维度（384）
          */
         @Override
         public int dimensions() {
-            return 384;
+            return dimensions;
         }
 
         /**
          * 处理嵌入请求
-         * 
+         *
          * @param request 嵌入请求
          * @return 嵌入响应
          */
