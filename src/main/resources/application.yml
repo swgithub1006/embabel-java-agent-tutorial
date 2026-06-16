@@ -1,5 +1,3 @@
-server:
-  port: 8080
 spring:
   application:
     name: embabel-java-agent-tutorial
@@ -12,27 +10,6 @@ embabel:
       models:
         deepseek:
           api-key: ${DEEPSEEK_API_KEY}
-  observability:
-    enabled: true
-    service-name: WeatherAgent
-management:
-  endpoints:
-    web:
-      exposure:
-        include: prometheus,health,metrics
-  prometheus:
-    metrics:
-      export:
-        enabled: true
-  tracing:
-    enabled: true
-    sampling:
-      probability: 1.0
-  langfuse:
-    enabled: true
-    endpoint: http://localhost:3000/api/public/otel
-    public-key: ${LANGFUSE_PUBLIC_KEY}
-    secret-key: ${LANGFUSE_SECRET_KEY}
 
 openweather:
   api:
