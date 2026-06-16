@@ -48,7 +48,7 @@ public class WeatherAgent {
 
     @Action
     public City extractCity(UserInput userInput, OperationContext operationContext) {
-        return operationContext.ai().withLlm(LlmOptions.fromCriteria(ModelSelectionCriteria.getAuto()).withTemperature(2.0)).createObject(
+        return operationContext.ai().withLlm(LlmOptions.fromCriteria(ModelSelectionCriteria.getAuto())).createObjectIfPossible(
                 """
                         Extract the city name from this user input.
                         - city name: the name of the city
