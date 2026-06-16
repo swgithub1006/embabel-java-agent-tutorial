@@ -8,8 +8,8 @@ import com.embabel.agent.api.common.OperationContext;
 import com.embabel.agent.domain.io.UserInput;
 import com.embabel.common.ai.model.LlmOptions;
 import com.embabel.common.ai.model.ModelSelectionCriteria;
-import com.example.embabel.service.WeatherService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -40,10 +40,10 @@ public class WeatherAgent {
     @Value("${openweather.api.key}")
     private String openWeatherApiKey;
 
-    private final WeatherService weatherService;
+    private final RestTemplate restTemplate;
 
-    public WeatherAgent(WeatherService weatherService) {
-        this.weatherService = weatherService;
+    public WeatherAgent(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     @Action
@@ -77,7 +77,7 @@ public class WeatherAgent {
 
         System.out.println("WeatherAgent: Calling geo API: " + geoApiUrl);
 
-        GeoResponse[] geoResponses = weatherService.getGeo(geoApiUrl);
+        GeoResponse[] geoResponses = restTemplate.getForObject(geoApiUrl, GeoResponse[].class);
 
         if (geoResponses == null || geoResponses.length == 0) {
             System.err.println("WeatherAgent: Geo API returned empty or null response");
@@ -94,7 +94,7 @@ public class WeatherAgent {
                 geoResponse.lon,
                 openWeatherApiKey);
 
-        OpenWeatherResponse response = weatherService.getWeather(weatherApiUrl);
+        OpenWeatherResponse response = restTemplate.getForObject(weatherApiUrl, OpenWeatherResponse.class);
 
         if (response != null &&
             response.main != null &&

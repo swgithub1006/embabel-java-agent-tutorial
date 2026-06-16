@@ -5,24 +5,13 @@ spring:
     name: embabel-java-agent-tutorial
 
 embabel:
-#  models:
-#    default-llm: deepseek-chat
-#  agent:
-#    platform:
-#      models:
-#        deepseek:
-#          api-key: ${DEEPSEEK_API_KEY}
   models:
-    default-llm: qwen3:4b
+    default-llm: deepseek-chat
   agent:
     platform:
       models:
-        openai:
-          custom:
-            base-url: http://192.168.3.66:8000
-            completions-path: /v3/chat/completions
-            api-key: unused
-            models: qwen3:4b
+        deepseek:
+          api-key: ${DEEPSEEK_API_KEY}
   observability:
     enabled: true
     service-name: WeatherAgent
